@@ -1,0 +1,68 @@
+---
+import { Gallery } from "@hoangyell/gallery";
+
+const single = ["https://picsum.photos/seed/gallery1/800/600"];
+
+const pyramid = [
+  "https://picsum.photos/seed/gallery1/800/600",
+  "https://picsum.photos/seed/gallery2/800/600",
+  "https://picsum.photos/seed/gallery3/800/600",
+  "https://picsum.photos/seed/gallery4/800/600",
+];
+
+const rows3 = [
+  "https://picsum.photos/seed/gallery1/800/600",
+  "https://picsum.photos/seed/gallery2/800/600",
+  "https://picsum.photos/seed/gallery3/800/600",
+  "https://picsum.photos/seed/gallery4/800/600",
+  "https://picsum.photos/seed/gallery5/800/600",
+  "https://picsum.photos/seed/gallery6/800/600",
+  "https://picsum.photos/seed/gallery7/800/600",
+  "https://picsum.photos/seed/gallery8/800/600",
+];
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@hoangyell/gallery demo</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 42rem;
+        margin: 0 auto;
+        padding: 2rem 1rem 4rem;
+        line-height: 1.6;
+      }
+      h1 {
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+      }
+      h2 {
+        font-size: 1.125rem;
+        margin: 2.5rem 0 0.75rem;
+      }
+      p.lead {
+        color: #64748b;
+        margin-top: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>@hoangyell/gallery</h1>
+    <p class="lead">Astro image gallery with lightbox and pyramid layout.</p>
+
+    <h2>Single image</h2>
+    <Gallery items={single} />
+
+    <h2>Pyramid (2 rows, 4 images)</h2>
+    <Gallery items={pyramid} rows={2} />
+
+    <h2>3 rows, 8 images</h2>
+    <Gallery items={rows3} rows={3} />
+  </body>
+</html>

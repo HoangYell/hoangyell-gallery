@@ -1,0 +1,19 @@
+node_modules/
+dist/
+dist-pack/
+.astro/
+.DS_Store
+*.log
+
+# Secrets and local credentials — never commit
+.env
+.env.*
+.npmrc.local
+*.pem
+*.key
+
+# Editor / OS
+.vscode/
+.idea/
+*.swp
+Thumbs.db

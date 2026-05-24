@@ -1,0 +1,715 @@
+---
+/**
+ * @hoangyell/gallery — <Gallery /> component
+ *
+ * Image gallery with pyramid multi-row layout and accessible lightbox.
+ * Tap/click to open, arrow keys / swipe to navigate, ESC to close.
+ */
+
+export type ObjectFit = "cover" | "contain" | "fill" | "none" | "scale-down";
+
+export interface GalleryItemInput {
+  src: string;
+  alt?: string;
+  fit?: ObjectFit;
+}
+
+export interface Props {
+  /** Image URLs or { src, alt, fit } objects. */
+  items?: (string | GalleryItemInput)[];
+  /** Alt text array paired with string[] items. */
+  alts?: string[];
+  /** Extra CSS class on the wrapper. */
+  class?: string;
+  /** Number of visual rows (pyramid distribution). Auto if omitted. */
+  rows?: number;
+  /** Aspect ratio hint for items. */
+  orientation?: "landscape" | "portrait";
+  /** Scale factor to reduce gallery width (1 = full). */
+  scale?: number;
+  /** Global object-fit for all items unless overridden per-item. */
+  fit?: ObjectFit;
+}
+
+const {
+  class: className = "",
+  rows,
+  orientation = "landscape",
+  scale = 1,
+  fit = "cover",
+} = Astro.props;
+
+const rawItems = Array.isArray(Astro.props.items) ? Astro.props.items : [];
+const rawAlts = Array.isArray(Astro.props.alts) ? Astro.props.alts : [];
+
+type GalleryItem = { src: string; alt: string; fit: string };
+
+function altFromUrl(url: string): string {
+  try {
+    const filename = url.split("/").pop()?.split("?")[0] || "";
+    return filename.replace(/\.[^.]+$/, "").replace(/[-_]/g, " ");
+  } catch {
+    return "";
+  }
+}
+
+const galleryItems: GalleryItem[] = rawItems
+  .map((item, i) => {
+    if (typeof item === "string") {
+      return {
+        src: item,
+        alt: rawAlts[i] || altFromUrl(item),
+        fit: String(fit),
+      };
+    }
+    const itemFit = item?.fit || fit;
+    return {
+      src: item?.src || "",
+      alt: item?.alt || rawAlts[i] || altFromUrl(item?.src || ""),
+      fit: String(itemFit),
+    };
+  })
+  .filter((item) => item.src !== "");
+
+const resolvedRows =
+  rows !== undefined ? Math.max(1, rows) : Math.ceil(galleryItems.length / 3);
+
+let groupedItems: GalleryItem[][] = [];
+
+if (resolvedRows <= 1 || galleryItems.length <= 1) {
+  groupedItems = [galleryItems];
+} else {
+  const n = galleryItems.length;
+  const actualRows = Math.max(1, Math.min(resolvedRows, n));
+  const base = Math.floor(n / actualRows);
+  const remainder = n % actualRows;
+
+  let idx = 0;
+  for (let i = 0; i < actualRows; i++) {
+    const isBottomRow = i >= actualRows - remainder;
+    const rowSize = isBottomRow ? base + 1 : base;
+    groupedItems.push(galleryItems.slice(idx, idx + rowSize));
+    idx += rowSize;
+  }
+}
+---
+
+{
+  galleryItems.length > 0 && (
+    <div
+      class={`hy-gallery ${className}`}
+      data-hy-gallery
+      data-orientation={orientation}
+      style={scale !== 1 ? `width: ${scale * 100}%; margin: 2rem auto;` : undefined}
+    >
+      {groupedItems.map((group, rowIdx) => {
+        const isFirstRow = rowIdx === 0;
+        const isLastRow = rowIdx === groupedItems.length - 1;
+        return (
+          <div class="hy-gallery-row" style={`--row-cols: ${group.length};`}>
+            {group.map((item, colIdx) => {
+              const isFirstCol = colIdx === 0;
+              const isLastCol = colIdx === group.length - 1;
+              const cornerClasses = [
+                isFirstRow && isFirstCol && "is-tl",
+                isFirstRow && isLastCol && "is-tr",
+                isLastRow && isFirstCol && "is-bl",
+                isLastRow && isLastCol && "is-br",
+              ]
+                .filter(Boolean)
+                .join(" ");
+              return (
+                <button
+                  type="button"
+                  class={`hy-gallery-item ${cornerClasses}`}
+                  data-zoom-src={item.src}
+                  data-alt={item.alt}
+                  aria-label={
+                    item.alt ? `View full size: ${item.alt}` : "View full size image"
+                  }
+                >
+                  <img
+                    src={item.src}
+                    alt={item.alt}
+                    loading="lazy"
+                    decoding="async"
+                    class="hy-gallery-img"
+                    style={`object-fit: ${item.fit} !important;`}
+                  />
+                </button>
+              );
+            })}
+          </div>
+        );
+      })}
+    </div>
+  )
+}
+
+<style>
+  /* ── Custom properties (override on .hy-gallery or :root) ── */
+  .hy-gallery {
+    --hy-gallery-gap: 4px;
+    --hy-gallery-radius: 1rem;
+    --hy-gallery-bg: #f8fafc;
+    --hy-gallery-overlay-bg: rgba(255, 255, 255, 0.7);
+    --hy-gallery-accent: #2563eb;
+    --hy-gallery-border: #e2e8f0;
+    --hy-gallery-text: #334155;
+    --hy-gallery-control-bg: rgba(255, 255, 255, 0.95);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .hy-gallery {
+      --hy-gallery-bg: #0f172a;
+      --hy-gallery-overlay-bg: rgba(2, 6, 23, 0.8);
+      --hy-gallery-accent: #60a5fa;
+      --hy-gallery-border: #334155;
+      --hy-gallery-text: #e2e8f0;
+      --hy-gallery-control-bg: rgba(30, 41, 59, 0.95);
+    }
+  }
+
+  .hy-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hy-gallery-gap);
+    margin-block: 2rem;
+    margin-inline: -1rem;
+  }
+
+  @media (min-width: 640px) {
+    .hy-gallery {
+      margin-inline: 0;
+    }
+  }
+
+  .hy-gallery-row {
+    display: grid;
+    gap: var(--hy-gallery-gap);
+    grid-template-columns: repeat(var(--row-cols, 1), minmax(0, 1fr));
+  }
+
+  .hy-gallery-item {
+    display: block;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    background: var(--hy-gallery-bg);
+    cursor: zoom-in;
+    border: none;
+    padding: 0;
+    aspect-ratio: 4 / 3;
+    contain: paint;
+    isolation: isolate;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .hy-gallery-item.is-tl {
+    border-top-left-radius: var(--hy-gallery-radius);
+  }
+  .hy-gallery-item.is-tr {
+    border-top-right-radius: var(--hy-gallery-radius);
+  }
+  .hy-gallery-item.is-bl {
+    border-bottom-left-radius: var(--hy-gallery-radius);
+  }
+  .hy-gallery-item.is-br {
+    border-bottom-right-radius: var(--hy-gallery-radius);
+  }
+
+  @media (max-width: 639px) {
+    .hy-gallery-item.is-tl,
+    .hy-gallery-item.is-tr,
+    .hy-gallery-item.is-bl,
+    .hy-gallery-item.is-br {
+      border-radius: 0;
+    }
+  }
+
+  .hy-gallery[data-orientation="portrait"] .hy-gallery-item {
+    aspect-ratio: 3 / 4;
+  }
+
+  @media (max-width: 639px) {
+    .hy-gallery-item {
+      aspect-ratio: 1 / 1;
+    }
+    .hy-gallery[data-orientation="portrait"] .hy-gallery-item {
+      aspect-ratio: 4 / 5;
+    }
+  }
+
+  .hy-gallery-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    object-fit: cover;
+    object-position: center;
+    aspect-ratio: auto;
+    max-width: none;
+    max-height: none;
+    transform-origin: center;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hy-gallery-item:hover .hy-gallery-img,
+  .hy-gallery-item:focus-visible .hy-gallery-img {
+    will-change: transform;
+    transform: scale(1.06);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hy-gallery-img {
+      transition: none !important;
+    }
+    .hy-gallery-item:hover .hy-gallery-img,
+    .hy-gallery-item:focus-visible .hy-gallery-img {
+      transform: none !important;
+    }
+  }
+
+  .hy-gallery-item:focus {
+    outline: none;
+  }
+
+  .hy-gallery-item:focus-visible {
+    outline: 2px solid var(--hy-gallery-accent);
+    outline-offset: -2px;
+    z-index: 1;
+  }
+
+  /* ── Lightbox overlay ── */
+  :global(.hy-gallery-overlay) {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--hy-gallery-overlay-bg);
+    backdrop-filter: blur(12px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    cursor: zoom-out;
+  }
+
+  :global(.hy-gallery-overlay.is-active) {
+    opacity: 1;
+  }
+
+  :global(.hy-gallery-overlay-content) {
+    position: relative;
+    width: 90vw;
+    height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  :global(.hy-gallery-overlay-img) {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 0.5rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--hy-gallery-border);
+    cursor: default;
+    user-select: none;
+    transform: scale(0.92);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
+  }
+
+  :global(.hy-gallery-overlay.is-active .hy-gallery-overlay-img) {
+    transform: scale(1);
+  }
+
+  :global(.hy-gallery-slide-anim) {
+    animation: hy-gallery-slide-in 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+  }
+
+  @keyframes hy-gallery-slide-in {
+    from {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  :global(.hy-gallery-counter) {
+    position: absolute;
+    top: max(env(safe-area-inset-top, 0px), 16px);
+    left: max(env(safe-area-inset-left, 0px), 16px);
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background: var(--hy-gallery-control-bg);
+    border: 1px solid var(--hy-gallery-border);
+    font-family: system-ui, sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--hy-gallery-text);
+    pointer-events: none;
+    user-select: none;
+    z-index: 10;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(4px);
+  }
+
+  :global(.hy-gallery-close) {
+    position: absolute;
+    top: max(env(safe-area-inset-top, 0px), 16px);
+    right: max(env(safe-area-inset-right, 0px), 16px);
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--hy-gallery-border);
+    border-radius: 9999px;
+    background: var(--hy-gallery-control-bg);
+    color: var(--hy-gallery-text);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    z-index: 10;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+  }
+
+  :global(.hy-gallery-nav) {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2.75rem;
+    height: 2.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--hy-gallery-border);
+    border-radius: 9999px;
+    background: var(--hy-gallery-control-bg);
+    color: var(--hy-gallery-text);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    z-index: 10;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+  }
+
+  :global(.hy-gallery-nav-prev) {
+    left: max(env(safe-area-inset-left, 0px), 16px);
+  }
+
+  :global(.hy-gallery-nav-next) {
+    right: max(env(safe-area-inset-right, 0px), 16px);
+  }
+
+  :global(.hy-gallery-close:hover),
+  :global(.hy-gallery-nav:hover),
+  :global(.hy-gallery-close:focus-visible),
+  :global(.hy-gallery-nav:focus-visible) {
+    transform: scale(1.1);
+    color: var(--hy-gallery-accent);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+
+  :global(.hy-gallery-nav:hover),
+  :global(.hy-gallery-nav:focus-visible) {
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  @media (max-width: 639px) {
+    :global(.hy-gallery-nav) {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+    :global(.hy-gallery-nav-prev) {
+      left: max(env(safe-area-inset-left, 0px), 8px);
+    }
+    :global(.hy-gallery-nav-next) {
+      right: max(env(safe-area-inset-right, 0px), 8px);
+    }
+  }
+</style>
+
+<script>
+  class GalleryLightbox {
+    gallery: HTMLElement;
+    items: HTMLButtonElement[];
+    overlay: HTMLElement | null;
+    imgEl: HTMLImageElement | null;
+    counterEl: HTMLElement | null;
+    prevBtn: HTMLButtonElement | null;
+    nextBtn: HTMLButtonElement | null;
+    currentIndex: number;
+    touchStartX: number;
+    touchStartY: number;
+
+    constructor(el: HTMLElement) {
+      this.gallery = el;
+      this.items = Array.from(
+        el.querySelectorAll<HTMLButtonElement>(".hy-gallery-item"),
+      );
+      this.overlay = null;
+      this.imgEl = null;
+      this.counterEl = null;
+      this.prevBtn = null;
+      this.nextBtn = null;
+      this.currentIndex = -1;
+      this.touchStartX = 0;
+      this.touchStartY = 0;
+
+      this.bind();
+      document.addEventListener("astro:before-swap", this.forceClose);
+    }
+
+    bind = () => {
+      this.gallery.addEventListener("click", (e) => {
+        const btn = (e.target as HTMLElement).closest<HTMLButtonElement>(
+          ".hy-gallery-item",
+        );
+        if (!btn) return;
+        const index = this.items.indexOf(btn);
+        if (index > -1) this.open(index);
+      });
+    };
+
+    forceClose = () => {
+      if (this.overlay) {
+        this.overlay.remove();
+        this.overlay = null;
+        this.imgEl = null;
+        this.counterEl = null;
+
+        document.removeEventListener("keydown", this.handleKey);
+        document.removeEventListener("gesturestart", this.preventZoom);
+        document.body.style.overflow = "";
+        const main = document.querySelector("main");
+        if (main) main.removeAttribute("inert");
+      }
+      document.removeEventListener("astro:before-swap", this.forceClose);
+    };
+
+    open = (index: number) => {
+      this.currentIndex = index;
+      const src = this.items[index].dataset.zoomSrc || "";
+      const alt = this.items[index].dataset.alt || "";
+
+      this.buildOverlay();
+      if (!this.imgEl || !this.overlay) return;
+
+      this.imgEl.src = src;
+      this.imgEl.alt = alt;
+      this.updateCounter();
+      this.updateNavButtons();
+      this.preload(index + 1);
+
+      document.body.appendChild(this.overlay);
+      document.body.style.overflow = "hidden";
+      const main = document.querySelector("main");
+      if (main) main.setAttribute("inert", "");
+      this.overlay.focus();
+
+      document.addEventListener("gesturestart", this.preventZoom, {
+        passive: false,
+      });
+
+      requestAnimationFrame(() => {
+        this.overlay?.classList.add("is-active");
+      });
+    };
+
+    buildOverlay = () => {
+      if (this.overlay) return;
+
+      this.overlay = document.createElement("div");
+      this.overlay.className = "hy-gallery-overlay";
+      this.overlay.tabIndex = -1;
+      this.overlay.setAttribute("role", "dialog");
+      this.overlay.setAttribute("aria-modal", "true");
+      this.overlay.setAttribute("aria-label", "Image viewer");
+
+      const closeBtn = document.createElement("button");
+      closeBtn.className = "hy-gallery-close";
+      closeBtn.setAttribute("aria-label", "Close");
+      closeBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+      closeBtn.addEventListener("click", this.close);
+
+      this.prevBtn = document.createElement("button");
+      this.prevBtn.className = "hy-gallery-nav hy-gallery-nav-prev";
+      this.prevBtn.setAttribute("aria-label", "Previous image");
+      this.prevBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>`;
+      this.prevBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        this.navigate(-1);
+      });
+
+      this.nextBtn = document.createElement("button");
+      this.nextBtn.className = "hy-gallery-nav hy-gallery-nav-next";
+      this.nextBtn.setAttribute("aria-label", "Next image");
+      this.nextBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`;
+      this.nextBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        this.navigate(1);
+      });
+
+      const content = document.createElement("div");
+      content.className = "hy-gallery-overlay-content";
+
+      this.imgEl = document.createElement("img");
+      this.imgEl.className = "hy-gallery-overlay-img";
+      this.imgEl.setAttribute("decoding", "sync");
+
+      this.counterEl = document.createElement("div");
+      this.counterEl.className = "hy-gallery-counter";
+      this.counterEl.setAttribute("aria-hidden", "true");
+
+      content.appendChild(this.imgEl);
+      this.overlay.append(closeBtn, this.prevBtn, this.nextBtn, content, this.counterEl);
+
+      if (this.items.length <= 1) {
+        this.prevBtn.style.display = "none";
+        this.nextBtn.style.display = "none";
+        this.counterEl.style.display = "none";
+      }
+
+      this.overlay.addEventListener("click", this.handleOverlayClick);
+      this.overlay.addEventListener("touchstart", this.handleTouchStart, {
+        passive: true,
+      });
+      this.overlay.addEventListener("touchend", this.handleTouchEnd, {
+        passive: true,
+      });
+      document.addEventListener("keydown", this.handleKey);
+    };
+
+    close = () => {
+      if (!this.overlay) return;
+
+      this.overlay.classList.remove("is-active");
+
+      setTimeout(() => {
+        this.overlay?.parentNode?.removeChild(this.overlay);
+        this.overlay = null;
+        this.imgEl = null;
+        this.counterEl = null;
+
+        document.body.style.overflow = "";
+        const main = document.querySelector("main");
+        if (main) main.removeAttribute("inert");
+
+        document.removeEventListener("keydown", this.handleKey);
+        document.removeEventListener("gesturestart", this.preventZoom);
+
+        if (this.currentIndex >= 0 && this.currentIndex < this.items.length) {
+          this.items[this.currentIndex].focus();
+        }
+      }, 300);
+    };
+
+    navigate = (dir: number) => {
+      const next = this.currentIndex + dir;
+      if (next < 0 || next >= this.items.length) return;
+
+      this.currentIndex = next;
+      const content = this.overlay?.querySelector(".hy-gallery-overlay-content");
+      if (!content || !this.imgEl) return;
+
+      const oldImg = this.imgEl;
+      this.imgEl = document.createElement("img");
+      this.imgEl.className = "hy-gallery-overlay-img hy-gallery-slide-anim";
+      this.imgEl.setAttribute("decoding", "sync");
+
+      const src = this.items[next].dataset.zoomSrc || "";
+      const alt = this.items[next].dataset.alt || "";
+
+      this.imgEl.src = src;
+      this.imgEl.alt = alt;
+
+      content.replaceChild(this.imgEl, oldImg);
+
+      this.updateCounter();
+      this.updateNavButtons();
+      this.preload(next + dir);
+    };
+
+    preload = (index: number) => {
+      if (index >= 0 && index < this.items.length) {
+        const nextSrc = this.items[index].dataset.zoomSrc;
+        if (nextSrc) new Image().src = nextSrc;
+      }
+    };
+
+    updateNavButtons = () => {
+      if (!this.prevBtn || !this.nextBtn) return;
+      this.prevBtn.style.visibility = this.currentIndex <= 0 ? "hidden" : "";
+      this.nextBtn.style.visibility =
+        this.currentIndex >= this.items.length - 1 ? "hidden" : "";
+    };
+
+    updateCounter = () => {
+      if (this.counterEl) {
+        this.counterEl.textContent = `${this.currentIndex + 1}/${this.items.length}`;
+      }
+    };
+
+    handleOverlayClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        target.classList.contains("hy-gallery-overlay") ||
+        target.classList.contains("hy-gallery-overlay-content")
+      ) {
+        this.close();
+      }
+    };
+
+    handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") this.close();
+      else if (e.key === "ArrowLeft") this.navigate(-1);
+      else if (e.key === "ArrowRight") this.navigate(1);
+    };
+
+    handleTouchStart = (e: TouchEvent) => {
+      this.touchStartX = e.changedTouches[0].screenX;
+      this.touchStartY = e.changedTouches[0].screenY;
+    };
+
+    handleTouchEnd = (e: TouchEvent) => {
+      const diffX = e.changedTouches[0].screenX - this.touchStartX;
+      const diffY = e.changedTouches[0].screenY - this.touchStartY;
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+        if (diffX > 0) this.navigate(-1);
+        else this.navigate(1);
+      }
+    };
+
+    preventZoom = (e: Event) => {
+      if (e.type === "gesturestart") {
+        e.preventDefault();
+      }
+    };
+  }
+
+  function initGalleries() {
+    document.querySelectorAll("[data-hy-gallery]").forEach((el) => {
+      if (!el.hasAttribute("data-hy-gallery-bound")) {
+        el.setAttribute("data-hy-gallery-bound", "");
+        new GalleryLightbox(el as HTMLElement);
+      }
+    });
+  }
+
+  initGalleries();
+  document.addEventListener("astro:page-load", initGalleries);
+</script>

@@ -1,0 +1,39 @@
+{
+  "name": "hoangyell-gallery",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Astro image gallery with lightbox, pyramid layout, and accessible controls.",
+  "license": "MIT",
+  "author": "Hoang Yell <hoangyell@gmail.com> (https://hoangyell.com)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HoangYell/hoangyell-gallery.git"
+  },
+  "homepage": "https://github.com/HoangYell/hoangyell-gallery#readme",
+  "bugs": {
+    "url": "https://github.com/HoangYell/hoangyell-gallery/issues"
+  },
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=8"
+  },
+  "keywords": [
+    "astro",
+    "gallery",
+    "lightbox",
+    "image-gallery",
+    "astro-component",
+    "mdx"
+  ],
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "dev": "pnpm --filter astro-basic dev",
+    "build": "pnpm --filter @hoangyell/gallery run typecheck && pnpm --filter astro-basic build",
+    "typecheck": "pnpm -r run typecheck",
+    "pack:check": "mkdir -p dist-pack && pnpm --dir packages/astro pack --pack-destination ../../dist-pack",
+    "release": "./scripts/release.sh"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
