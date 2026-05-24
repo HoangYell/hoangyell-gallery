@@ -27,6 +27,7 @@
 ## Features
 
 - **Pyramid layout** — distribute images across rows with `rows` prop
+- **Two fit modes** — `cover` (default, uniform photo grid) or `contain` (natural aspect, for diagrams and tall portraits)
 - **Lightbox** — click to open, keyboard arrows, swipe, ESC to close
 - **Corner rounding** — only the four outer corners of each group are rounded
 - **Hover zoom** — image scales inside its cell without changing layout
@@ -79,8 +80,35 @@ import { Gallery } from "@hoangyell/gallery";
 | `rows` | `number` | auto (~3 per row) | Number of visual rows |
 | `orientation` | `"landscape" \| "portrait"` | `"landscape"` | Item aspect ratio hint |
 | `scale` | `number` | `1` | Gallery width scale (0–1) |
-| `fit` | `ObjectFit` | `"cover"` | Default CSS object-fit |
+| `fit` | `ObjectFit` | `"cover"` | Default CSS object-fit — see Fit modes below |
 | `class` | `string` | — | Extra wrapper class |
+
+## Fit modes
+
+The `fit` prop controls **both** the image's `object-fit` **and** the
+container's aspect ratio. Pick the right one for your content:
+
+| Mode | What you get | When to use |
+|---|---|---|
+| `"cover"` (default) | Uniform 4:3 grid (1:1 on mobile). Images are cropped to fill. | Photo galleries — travel, products, faces. The Pinterest aesthetic. |
+| `"contain"` | Container hugs each image's natural aspect ratio. No cropping. | Diagrams, charts, screenshots, comics, tall portraits. |
+
+Set it at the gallery level:
+
+```mdx
+<Gallery items={["/diagram.png"]} rows={1} fit="contain" />
+```
+
+Or per-item (mix and match in the same gallery):
+
+```mdx
+<Gallery
+  items={[
+    "/cover-photo.jpg",
+    { src: "/architecture-diagram.png", fit: "contain" },
+  ]}
+/>
+```
 
 ## Dark mode
 

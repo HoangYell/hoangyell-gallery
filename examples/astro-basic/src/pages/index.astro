@@ -28,6 +28,15 @@ const sixPack = [
   "https://picsum.photos/seed/hy-six-6/900/680",
 ];
 
+const diagramWide = [
+  "https://picsum.photos/seed/hy-diagram-a/1600/700",
+  "https://picsum.photos/seed/hy-diagram-b/1600/700",
+];
+
+const portraitTall = [
+  "https://picsum.photos/seed/hy-portrait/700/1100",
+];
+
 const features = [
   {
     icon: "layers",
@@ -278,10 +287,10 @@ const familyCards = [
       <div class="max-w-5xl mx-auto px-4 sm:px-6">
         <div class="text-center max-w-2xl mx-auto">
           <h2 class="font-display text-3xl sm:text-4xl font-bold text-slate-900 dark:text-slate-100">
-            Three layouts. Infinite combinations.
+            Three layouts. Two fit modes.
           </h2>
           <p class="mt-4 text-slate-600 dark:text-slate-400">
-            One <code class="font-mono text-[0.9em] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800">rows</code> prop is all it takes.
+            One <code class="font-mono text-[0.9em] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800">rows</code> prop for layout, one <code class="font-mono text-[0.9em] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800">fit</code> prop for photos vs diagrams.
           </p>
         </div>
 
@@ -305,6 +314,30 @@ const familyCards = [
               Pyramid · 3 rows
             </h3>
             <Gallery items={[...sixPack, ...pyramid.slice(0, 2)]} rows={3} />
+          </div>
+
+          <div>
+            <div class="flex flex-wrap items-baseline gap-3 mb-4">
+              <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
+                Diagrams · <code class="font-mono normal-case tracking-normal text-brand-600 dark:text-brand-400">fit="contain"</code>
+              </h3>
+              <p class="text-sm text-slate-500 dark:text-slate-500">
+                Drops the forced 4:3 grid — perfect for charts, screenshots, and tall portraits.
+              </p>
+            </div>
+            <Gallery items={diagramWide} rows={1} fit="contain" />
+          </div>
+
+          <div>
+            <div class="flex flex-wrap items-baseline gap-3 mb-4">
+              <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
+                Tall portrait · <code class="font-mono normal-case tracking-normal text-brand-600 dark:text-brand-400">fit="contain"</code>
+              </h3>
+              <p class="text-sm text-slate-500 dark:text-slate-500">
+                Full image, no crop, natural aspect ratio.
+              </p>
+            </div>
+            <Gallery items={portraitTall} rows={1} fit="contain" />
           </div>
         </div>
       </div>

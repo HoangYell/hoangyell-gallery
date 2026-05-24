@@ -100,6 +100,7 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
       class={`hy-gallery ${className}`}
       data-hy-gallery
       data-orientation={orientation}
+      data-fit={fit}
       style={scale !== 1 ? `width: ${scale * 100}%; margin: 2rem auto;` : undefined}
     >
       {groupedItems.map((group, rowIdx) => {
@@ -124,6 +125,7 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
                   class={`hy-gallery-item ${cornerClasses}`}
                   data-zoom-src={item.src}
                   data-alt={item.alt}
+                  data-fit={item.fit}
                   aria-label={
                     item.alt ? `View full size: ${item.alt}` : "View full size image"
                   }
@@ -263,6 +265,16 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
     }
   }
 
+  /* fit="contain" — show the whole image at its natural aspect ratio.
+     Drops the forced 4:3 / 1:1 container so diagrams, charts, screenshots,
+     and tall portraits render fully without cropping or letterboxing.
+     Applied either at the wrapper (global) or per-item via data-fit. */
+  .hy-gallery[data-fit="contain"] .hy-gallery-item,
+  .hy-gallery .hy-gallery-item[data-fit="contain"] {
+    aspect-ratio: auto;
+    background: transparent;
+  }
+
   .hy-gallery-img {
     position: absolute;
     inset: 0;
@@ -277,6 +289,16 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
     max-height: none;
     transform-origin: center;
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* In contain mode the image is the primary content — let it drive height
+     instead of being absolutely positioned inside a fixed-aspect box. */
+  .hy-gallery[data-fit="contain"] .hy-gallery-img,
+  .hy-gallery .hy-gallery-item[data-fit="contain"] .hy-gallery-img {
+    position: static;
+    width: 100%;
+    height: auto;
+    inset: auto;
   }
 
   .hy-gallery-item:hover .hy-gallery-img,
