@@ -29,9 +29,11 @@
   "scripts": {
     "dev": "pnpm --filter astro-basic dev",
     "build": "pnpm --filter @hoangyell/gallery run typecheck && pnpm --filter astro-basic build",
+    "preview": "pnpm --filter astro-basic preview --port 4325",
     "typecheck": "pnpm -r run typecheck",
     "pack:check": "mkdir -p dist-pack && pnpm --dir packages/astro pack --pack-destination ../../dist-pack",
-    "release": "./scripts/release.sh"
+    "release": "./scripts/release.sh",
+    "deploy": "./scripts/deploy-pages.sh"
   },
   "devDependencies": {
     "typescript": "^5.9.3"

@@ -2,12 +2,16 @@
 
 [Astro](https://astro.build/) image gallery component with lightbox, pyramid multi-row layout, and accessible controls.
 
+**Live demo → [gallery.hoangyell.com](https://gallery.hoangyell.com)**
+
 <p align="center">
-  <img
-    src="https://raw.githubusercontent.com/HoangYell/hoangyell-gallery/main/packages/astro/docs/gallery-overview.jpg"
-    alt="Three @hoangyell/gallery layouts: single image, 2-row pyramid of 4 images, and 3-row layout of 8 images"
-    width="640"
-  />
+  <a href="https://gallery.hoangyell.com">
+    <img
+      src="https://raw.githubusercontent.com/HoangYell/hoangyell-gallery/main/packages/astro/docs/site-hero.jpg"
+      alt="@hoangyell/gallery landing page hero — The friendly Astro image gallery"
+      width="720"
+    />
+  </a>
 </p>
 
 <p align="center">
@@ -15,7 +19,7 @@
   <br />
   <img
     src="https://raw.githubusercontent.com/HoangYell/hoangyell-gallery/main/packages/astro/docs/gallery-lightbox.jpg"
-    alt="Lightbox view with 1/4 page indicator, close button, and next-image arrow"
+    alt="Lightbox view with page indicator, close button, and next-image arrow"
     width="640"
   />
 </p>

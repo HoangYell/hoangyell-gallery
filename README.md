@@ -2,16 +2,24 @@
 
 Astro image gallery with lightbox, pyramid multi-row layout, and accessible controls.
 
-Published as [`@hoangyell/gallery`](https://www.npmjs.com/package/@hoangyell/gallery) on npm.
+- Live demo: **[gallery.hoangyell.com](https://gallery.hoangyell.com)**
+- npm: **[`@hoangyell/gallery`](https://www.npmjs.com/package/@hoangyell/gallery)**
 
+<p align="center">
+  <a href="https://gallery.hoangyell.com">
+    <img
+      src="./packages/astro/docs/site-hero.jpg"
+      alt="@hoangyell/gallery landing page — The friendly Astro image gallery"
+      width="720"
+    />
+  </a>
+</p>
 <p align="center">
   <img
     src="./packages/astro/docs/gallery-overview.jpg"
     alt="Three @hoangyell/gallery layouts: single image, 2-row pyramid of 4 images, and 3-row layout of 8 images"
     width="640"
   />
-</p>
-<p align="center">
   <img
     src="./packages/astro/docs/gallery-lightbox.jpg"
     alt="Lightbox view with page indicator, close button, and next-image arrow"
@@ -37,10 +45,28 @@ import { Gallery } from "@hoangyell/gallery";
 
 ```sh
 pnpm install
-pnpm dev          # demo app at http://localhost:4325
-pnpm typecheck
-pnpm pack:check
+pnpm dev                  # demo app at http://localhost:4325
+pnpm build                # typecheck + build the demo to dist/
+pnpm preview              # serve the built demo locally
+pnpm typecheck            # typecheck every package
+pnpm pack:check           # dry-run the npm tarball
 ```
+
+## Deploy the demo site
+
+The landing page at **[gallery.hoangyell.com](https://gallery.hoangyell.com)** is
+the demo app in `examples/astro-basic/`, deployed to Cloudflare Pages
+under the `Ngohoang.yell@gmail.com's Account`.
+
+```sh
+wrangler login            # one-time browser OAuth
+pnpm deploy               # build + deploy to Cloudflare Pages
+```
+
+The deploy script verifies you're logged into the expected Cloudflare
+account before doing anything, then runs `wrangler pages deploy` to the
+`hoangyell-gallery` project. The custom domain `gallery.hoangyell.com`
+is bound once via the Cloudflare dashboard.
 
 ## Release
 

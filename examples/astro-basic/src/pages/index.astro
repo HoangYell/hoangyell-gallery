@@ -1,68 +1,412 @@
 ---
 import { Gallery } from "@hoangyell/gallery";
+import Base from "../layouts/Base.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
+import CopyCode from "../components/CopyCode.astro";
 
-const single = ["https://picsum.photos/seed/gallery1/800/600"];
+const heroImg = "https://picsum.photos/seed/hy-gallery-hero/1600/1100";
 
 const pyramid = [
-  "https://picsum.photos/seed/gallery1/800/600",
-  "https://picsum.photos/seed/gallery2/800/600",
-  "https://picsum.photos/seed/gallery3/800/600",
-  "https://picsum.photos/seed/gallery4/800/600",
+  "https://picsum.photos/seed/hy-1/900/680",
+  "https://picsum.photos/seed/hy-2/900/680",
+  "https://picsum.photos/seed/hy-3/900/680",
+  "https://picsum.photos/seed/hy-4/900/680",
 ];
 
-const rows3 = [
-  "https://picsum.photos/seed/gallery1/800/600",
-  "https://picsum.photos/seed/gallery2/800/600",
-  "https://picsum.photos/seed/gallery3/800/600",
-  "https://picsum.photos/seed/gallery4/800/600",
-  "https://picsum.photos/seed/gallery5/800/600",
-  "https://picsum.photos/seed/gallery6/800/600",
-  "https://picsum.photos/seed/gallery7/800/600",
-  "https://picsum.photos/seed/gallery8/800/600",
+const trio = [
+  "https://picsum.photos/seed/hy-tri-1/900/680",
+  "https://picsum.photos/seed/hy-tri-2/900/680",
+  "https://picsum.photos/seed/hy-tri-3/900/680",
+];
+
+const sixPack = [
+  "https://picsum.photos/seed/hy-six-1/900/680",
+  "https://picsum.photos/seed/hy-six-2/900/680",
+  "https://picsum.photos/seed/hy-six-3/900/680",
+  "https://picsum.photos/seed/hy-six-4/900/680",
+  "https://picsum.photos/seed/hy-six-5/900/680",
+  "https://picsum.photos/seed/hy-six-6/900/680",
+];
+
+const features = [
+  {
+    icon: "layers",
+    title: "Pyramid multi-row layout",
+    body: "Pass any number of images, declare `rows`, get a perfectly balanced grid that pyramids the extras to the bottom.",
+  },
+  {
+    icon: "zoom",
+    title: "Accessible lightbox",
+    body: "Click, tap, keyboard arrows, swipe, ESC. Focus is restored. `inert` locks the page behind. `prefers-reduced-motion` is honored.",
+  },
+  {
+    icon: "moon",
+    title: "Dark mode that just works",
+    body: "Follows OS preference by default. Respects `<html class=\"dark\">` and `[data-theme]` so it slots into any theming setup.",
+  },
+  {
+    icon: "spark",
+    title: "Zero config",
+    body: "Plain CSS, no Tailwind required in the host project. Drop it in an `.astro` or `.mdx` file and ship.",
+  },
+  {
+    icon: "palette",
+    title: "Themeable",
+    body: "Five CSS custom properties cover gaps, radii, colors, and accents. Bring your own brand.",
+  },
+  {
+    icon: "feather",
+    title: "Tiny",
+    body: "One component, ~8 KB gzipped. No runtime dependencies. Tree-shakeable. Ships nothing you don't use.",
+  },
+];
+
+const codeAstro = `---
+import { Gallery } from "@hoangyell/gallery";
+
+const photos = [
+  "/img/japan-1.webp",
+  "/img/japan-2.webp",
+  "/img/japan-3.webp",
+  "/img/japan-4.webp",
 ];
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@hoangyell/gallery demo</title>
-    <style>
-      :root {
-        color-scheme: light dark;
-      }
-      body {
-        font-family: system-ui, sans-serif;
-        max-width: 42rem;
-        margin: 0 auto;
-        padding: 2rem 1rem 4rem;
-        line-height: 1.6;
-      }
-      h1 {
-        font-size: 1.5rem;
-        margin-bottom: 0.25rem;
-      }
-      h2 {
-        font-size: 1.125rem;
-        margin: 2.5rem 0 0.75rem;
-      }
-      p.lead {
-        color: #64748b;
-        margin-top: 0;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>@hoangyell/gallery</h1>
-    <p class="lead">Astro image gallery with lightbox and pyramid layout.</p>
+<Gallery items={photos} rows={2} />`;
 
-    <h2>Single image</h2>
-    <Gallery items={single} />
+const codeMdx = `import { Gallery } from "@hoangyell/gallery";
 
-    <h2>Pyramid (2 rows, 4 images)</h2>
-    <Gallery items={pyramid} rows={2} />
+# Our honeymoon in Japan
 
-    <h2>3 rows, 8 images</h2>
-    <Gallery items={rows3} rows={3} />
-  </body>
-</html>
+<Gallery
+  items={[
+    "/japan/temple.webp",
+    { src: "/japan/sushi.webp", alt: "Toyosu sushi" },
+    "/japan/fuji.webp",
+  ]}
+  rows={2}
+/>`;
+---
+
+<Base>
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-white/70 dark:bg-slate-950/70 border-b border-slate-200/60 dark:border-slate-800/60">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+      <a href="/" class="inline-flex items-center gap-2 font-display font-semibold text-slate-900 dark:text-slate-100">
+        <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-pink-500 text-white text-xs font-bold">
+          HY
+        </span>
+        <span>@hoangyell/gallery</span>
+      </a>
+      <nav class="flex items-center gap-1.5 sm:gap-3 text-sm">
+        <a
+          href="#examples"
+          class="hidden sm:inline-block px-3 py-1.5 text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition"
+          >Examples</a
+        >
+        <a
+          href="#features"
+          class="hidden sm:inline-block px-3 py-1.5 text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition"
+          >Features</a
+        >
+        <a
+          href="#install"
+          class="hidden sm:inline-block px-3 py-1.5 text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition"
+          >Install</a
+        >
+        <a
+          href="https://github.com/HoangYell/hoangyell-gallery"
+          target="_blank"
+          rel="noopener"
+          aria-label="GitHub"
+          class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/70 backdrop-blur text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-brand-400 transition"
+        >
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.69-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.74.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.62 1.58.23 2.75.11 3.04.74.81 1.19 1.84 1.19 3.1 0 4.43-2.7 5.4-5.27 5.69.41.35.78 1.05.78 2.12v3.14c0 .31.21.67.8.56C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z" />
+          </svg>
+        </a>
+        <a
+          href="https://www.npmjs.com/package/@hoangyell/gallery"
+          target="_blank"
+          rel="noopener"
+          aria-label="npm"
+          class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/70 backdrop-blur text-slate-700 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-400 transition"
+        >
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M0 7.334v8h6.666v1.332H12v-1.332h12v-8H0zm6.666 6.664H5.334v-4H3.999v4H1.335V8.667h5.331v5.331zm4 0v1.336H8.001V8.667h5.334v5.332h-2.669v-.001zm12.001 0h-1.33v-4h-1.336v4h-1.335v-4h-1.33v4h-2.671V8.667h8.002v5.331zM10.665 10H12v2.667h-1.335V10z" />
+          </svg>
+        </a>
+        <ThemeToggle />
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-1">
+    {/* ── Hero ────────────────────────────────────────────────── */}
+    <section class="relative overflow-hidden">
+      <div class="hero-glow"></div>
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-12 sm:pt-24 sm:pb-20 relative">
+        <div class="text-center max-w-3xl mx-auto">
+          <a
+            href="https://www.npmjs.com/package/@hoangyell/gallery"
+            target="_blank"
+            rel="noopener"
+            class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70 backdrop-blur text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 transition mb-6"
+          >
+            <span class="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+            v1.0 on npm
+            <span aria-hidden="true">→</span>
+          </a>
+
+          <h1 class="font-display text-4xl sm:text-6xl font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-[1.05]">
+            The <span class="gradient-text">friendly</span><br class="hidden sm:inline" />
+            Astro image gallery
+          </h1>
+
+          <p class="mt-6 text-lg sm:text-xl text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto">
+            Lightbox. Pyramid layout. Dark mode. Accessible. Zero config. Drop it
+            into any <code class="font-mono text-[0.875em] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200">.astro</code>
+            or <code class="font-mono text-[0.875em] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200">.mdx</code>
+            file and ship.
+          </p>
+
+          <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <CopyCode code="npm install @hoangyell/gallery" />
+            <a
+              href="#examples"
+              class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium hover:bg-slate-800 dark:hover:bg-slate-200 transition shadow-sm"
+            >
+              See it live
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
+
+          <p class="mt-6 text-xs text-slate-500 dark:text-slate-500">
+            MIT licensed · No tracking · No ads · No build-time magic
+          </p>
+        </div>
+
+        {/* Hero gallery preview — a real Gallery instance in pyramid mode. */}
+        <div class="mt-14 sm:mt-20 max-w-4xl mx-auto">
+          <div class="rounded-3xl p-2 sm:p-3 bg-gradient-to-br from-brand-500/10 via-fuchsia-500/10 to-pink-500/10 dark:from-brand-500/15 dark:via-fuchsia-500/15 dark:to-pink-500/15 ring-1 ring-slate-200/60 dark:ring-slate-800/60 backdrop-blur">
+            <div class="rounded-2xl overflow-hidden bg-white dark:bg-slate-900 p-2 sm:p-4">
+              <Gallery items={pyramid} rows={2} />
+              <p class="text-center text-xs text-slate-500 dark:text-slate-500 mt-3">
+                ↑ Click any image. Use arrow keys or swipe.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* ── Examples ────────────────────────────────────────────── */}
+    <section id="examples" class="py-16 sm:py-24">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6">
+        <div class="text-center max-w-2xl mx-auto">
+          <h2 class="font-display text-3xl sm:text-4xl font-bold text-slate-900 dark:text-slate-100">
+            Three layouts. Infinite combinations.
+          </h2>
+          <p class="mt-4 text-slate-600 dark:text-slate-400">
+            One <code class="font-mono text-[0.9em] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800">rows</code> prop is all it takes.
+          </p>
+        </div>
+
+        <div class="mt-12 space-y-16">
+          <div>
+            <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400 mb-4">
+              Trio · 1 row
+            </h3>
+            <Gallery items={trio} rows={1} />
+          </div>
+
+          <div>
+            <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400 mb-4">
+              Six-pack · 2 rows
+            </h3>
+            <Gallery items={sixPack} rows={2} />
+          </div>
+
+          <div>
+            <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400 mb-4">
+              Pyramid · 3 rows
+            </h3>
+            <Gallery items={[...sixPack, ...pyramid.slice(0, 2)]} rows={3} />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* ── Features ────────────────────────────────────────────── */}
+    <section id="features" class="py-16 sm:py-24 bg-white/40 dark:bg-slate-900/40 border-y border-slate-200/60 dark:border-slate-800/60">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6">
+        <div class="text-center max-w-2xl mx-auto">
+          <h2 class="font-display text-3xl sm:text-4xl font-bold text-slate-900 dark:text-slate-100">
+            Built for real content
+          </h2>
+          <p class="mt-4 text-slate-600 dark:text-slate-400">
+            Born from years of running an image-heavy travel blog. Every default
+            is the one I wanted on production day one.
+          </p>
+        </div>
+
+        <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {features.map((f) => (
+            <div class="rounded-2xl p-6 bg-white/70 dark:bg-slate-900/70 backdrop-blur border border-slate-200/60 dark:border-slate-800/60 hover:border-brand-300 dark:hover:border-brand-700 transition group">
+              <div class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500/15 to-fuchsia-500/15 text-brand-600 dark:text-brand-400 group-hover:scale-110 transition">
+                {f.icon === "layers" && (
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                )}
+                {f.icon === "zoom" && (
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                )}
+                {f.icon === "moon" && (
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                )}
+                {f.icon === "spark" && (
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v6M12 16v6M4.93 4.93l4.24 4.24M14.83 14.83l4.24 4.24M2 12h6M16 12h6M4.93 19.07l4.24-4.24M14.83 9.17l4.24-4.24"/></svg>
+                )}
+                {f.icon === "palette" && (
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c3.31 0 6-2.69 6-6 0-4.96-4.49-9-10-9z"/></svg>
+                )}
+                {f.icon === "feather" && (
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>
+                )}
+              </div>
+              <h3 class="mt-4 text-lg font-semibold text-slate-900 dark:text-slate-100">
+                {f.title}
+              </h3>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                {f.body}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* ── Usage ────────────────────────────────────────────────── */}
+    <section class="py-16 sm:py-24">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6">
+        <div class="text-center max-w-2xl mx-auto">
+          <h2 class="font-display text-3xl sm:text-4xl font-bold text-slate-900 dark:text-slate-100">
+            Looks like Astro, behaves like magic
+          </h2>
+          <p class="mt-4 text-slate-600 dark:text-slate-400">
+            One import. One component. Works the same way in
+            <code class="font-mono text-[0.9em] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800">.astro</code>
+            and <code class="font-mono text-[0.9em] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800">.mdx</code>.
+          </p>
+        </div>
+
+        <div class="mt-12 grid gap-6 lg:grid-cols-2">
+          <div>
+            <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400 mb-3">
+              Astro page
+            </h3>
+            <pre class="rounded-2xl overflow-x-auto bg-slate-900 dark:bg-slate-950 text-slate-100 text-sm p-5 ring-1 ring-slate-800"><code>{codeAstro}</code></pre>
+          </div>
+          <div>
+            <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400 mb-3">
+              Inside MDX
+            </h3>
+            <pre class="rounded-2xl overflow-x-auto bg-slate-900 dark:bg-slate-950 text-slate-100 text-sm p-5 ring-1 ring-slate-800"><code>{codeMdx}</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* ── Install / CTA ────────────────────────────────────────── */}
+    <section id="install" class="py-16 sm:py-24 bg-gradient-to-br from-brand-500/5 via-fuchsia-500/5 to-pink-500/5 dark:from-brand-500/10 dark:via-fuchsia-500/10 dark:to-pink-500/10">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+        <h2 class="font-display text-3xl sm:text-4xl font-bold text-slate-900 dark:text-slate-100">
+          Ready to ship galleries that don't suck?
+        </h2>
+        <p class="mt-4 text-slate-600 dark:text-slate-400">
+          One install. One import. Beautiful images on every screen.
+        </p>
+
+        <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <CopyCode code="npm install @hoangyell/gallery" />
+          <CopyCode code="pnpm add @hoangyell/gallery" />
+        </div>
+
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+          <a
+            href="https://www.npmjs.com/package/@hoangyell/gallery"
+            target="_blank"
+            rel="noopener"
+            class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium hover:bg-slate-800 dark:hover:bg-slate-200 transition shadow-sm"
+          >
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M0 7.334v8h6.666v1.332H12v-1.332h12v-8H0zm6.666 6.664H5.334v-4H3.999v4H1.335V8.667h5.331v5.331zm4 0v1.336H8.001V8.667h5.334v5.332h-2.669v-.001zm12.001 0h-1.33v-4h-1.336v4h-1.335v-4h-1.33v4h-2.671V8.667h8.002v5.331zM10.665 10H12v2.667h-1.335V10z"/>
+            </svg>
+            View on npm
+          </a>
+          <a
+            href="https://github.com/HoangYell/hoangyell-gallery"
+            target="_blank"
+            rel="noopener"
+            class="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 backdrop-blur text-slate-700 dark:text-slate-200 font-medium hover:text-brand-600 dark:hover:text-brand-400 hover:border-brand-300 dark:hover:border-brand-700 transition"
+          >
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.69-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.74.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.62 1.58.23 2.75.11 3.04.74.81 1.19 1.84 1.19 3.1 0 4.43-2.7 5.4-5.27 5.69.41.35.78 1.05.78 2.12v3.14c0 .31.21.67.8.56C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/>
+            </svg>
+            Star on GitHub
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-200/60 dark:border-slate-800/60 bg-white/40 dark:bg-slate-950/40">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+      <div class="grid gap-8 sm:grid-cols-3">
+        <div>
+          <a href="/" class="inline-flex items-center gap-2 font-display font-semibold text-slate-900 dark:text-slate-100">
+            <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-pink-500 text-white text-xs font-bold">
+              HY
+            </span>
+            <span>@hoangyell/gallery</span>
+          </a>
+          <p class="mt-3 text-sm text-slate-500 dark:text-slate-400 italic">
+            A friendly Astro image gallery. Made with curiosity and a lot of
+            travel photos.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-[11px] font-bold text-slate-700 dark:text-slate-200 uppercase tracking-[0.18em] mb-3">
+            Project
+          </h2>
+          <ul class="space-y-1.5 text-sm">
+            <li><a href="https://www.npmjs.com/package/@hoangyell/gallery" target="_blank" rel="noopener" class="text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition">npm package <span class="text-slate-300 dark:text-slate-700 ml-1">↗</span></a></li>
+            <li><a href="https://github.com/HoangYell/hoangyell-gallery" target="_blank" rel="noopener" class="text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition">GitHub repo <span class="text-slate-300 dark:text-slate-700 ml-1">↗</span></a></li>
+            <li><a href="https://github.com/HoangYell/hoangyell-gallery/issues" target="_blank" rel="noopener" class="text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition">Report an issue <span class="text-slate-300 dark:text-slate-700 ml-1">↗</span></a></li>
+            <li><a href="https://github.com/HoangYell/hoangyell-gallery/blob/main/LICENSE" target="_blank" rel="noopener" class="text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition">MIT License <span class="text-slate-300 dark:text-slate-700 ml-1">↗</span></a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="text-[11px] font-bold text-slate-700 dark:text-slate-200 uppercase tracking-[0.18em] mb-3">
+            From the family
+          </h2>
+          <ul class="space-y-1.5 text-sm">
+            <li><a href="https://hoangyell.com" target="_blank" rel="noopener" class="text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition">hoangyell.com — the blog <span class="text-slate-300 dark:text-slate-700 ml-1">↗</span></a></li>
+            <li><a href="https://www.npmjs.com/~hoangyell" target="_blank" rel="noopener" class="text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition">npm packages by @hoangyell <span class="text-slate-300 dark:text-slate-700 ml-1">↗</span></a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-10 pt-6 border-t border-slate-200/60 dark:border-slate-800/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-500">
+        <p>© {new Date().getFullYear()} Hoang Yell · MIT</p>
+        <p>
+          A product of
+          <a href="https://hoangyell.com" target="_blank" rel="noopener" class="text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition">hoangyell.com</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</Base>

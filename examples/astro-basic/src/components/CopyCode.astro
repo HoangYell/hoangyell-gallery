@@ -1,0 +1,47 @@
+---
+export interface Props {
+  code: string;
+  label?: string;
+}
+const { code, label = "Copy" } = Astro.props;
+---
+
+<div class="copy-code group relative inline-flex items-center gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 backdrop-blur px-4 py-3 font-mono text-sm shadow-sm">
+  <span class="select-none text-slate-400 dark:text-slate-500">$</span>
+  <code class="text-slate-800 dark:text-slate-100">{code}</code>
+  <button
+    type="button"
+    class="copy-btn ml-2 inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-500 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+    data-code={code}
+    aria-label={label}
+  >
+    <svg class="copy-icon h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+    </svg>
+    <svg class="check-icon hidden h-4 w-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+  </button>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>(".copy-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const code = btn.dataset.code || "";
+      try {
+        await navigator.clipboard.writeText(code);
+      } catch (_) {
+        return;
+      }
+      const copyIcon = btn.querySelector<HTMLElement>(".copy-icon");
+      const checkIcon = btn.querySelector<HTMLElement>(".check-icon");
+      copyIcon?.classList.add("hidden");
+      checkIcon?.classList.remove("hidden");
+      setTimeout(() => {
+        copyIcon?.classList.remove("hidden");
+        checkIcon?.classList.add("hidden");
+      }, 1400);
+    });
+  });
+</script>
