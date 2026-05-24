@@ -48,12 +48,15 @@ Local end-to-end release using your `npm login` session. No CI, no
 `NPM_TOKEN`, no GitHub secrets — just your terminal.
 
 ```sh
-npm login                       # one-time, uses browser OAuth
+npm login                                  # one-time, uses browser OAuth
 
-./scripts/release.sh            # auto-bump patch (most common)
-./scripts/release.sh minor      # auto-bump minor
-./scripts/release.sh major      # auto-bump major
-./scripts/release.sh 1.2.3      # explicit version
+./scripts/release.sh                       # auto-bump patch (most common)
+./scripts/release.sh minor                 # auto-bump minor
+./scripts/release.sh major                 # auto-bump major
+./scripts/release.sh 1.2.3                 # explicit version
+
+# If your npm account has 2FA enabled for publish:
+OTP=123456 ./scripts/release.sh
 ```
 
 The script will:

@@ -17,8 +17,13 @@
 #   ./scripts/release.sh major          # auto-bump major
 #   ./scripts/release.sh 1.0.3          # explicit version
 #   ./scripts/release.sh v1.0.3         # leading 'v' is stripped
+#
+# If your npm account requires 2FA for publish, pass OTP via env:
+#   OTP=123456 ./scripts/release.sh
 
-set -euo pipefail
+# -E makes the ERR trap inherit into subshells, so the rollback fires
+# even if `npm publish` is invoked in a `(...)` group or pipeline.
+set -Eeuo pipefail
 
 # ── pretty output ─────────────────────────────────────────────────────────
 c_cyan='\033[36m'; c_green='\033[32m'; c_red='\033[31m'; c_dim='\033[2m'; c_off='\033[0m'
@@ -131,7 +136,7 @@ ok "Typecheck passed"
 
 # ── 6) dry-run publish (catches perms before any commit) ──────────────────
 log "Dry-run npm publish (validates auth + tarball)"
-(cd "$PACKAGE_DIR" && npm publish --dry-run --access public >/dev/null 2>&1)
+pnpm --dir "$PACKAGE_DIR" exec npm publish --dry-run --access public >/dev/null 2>&1
 ok "Dry-run OK"
 
 # ── 7) commit + tag locally ───────────────────────────────────────────────
@@ -147,14 +152,21 @@ rollback() {
   err "Publish failed — rolling back local commit + tag"
   git tag -d "v$VERSION" >/dev/null 2>&1 || true
   git reset --hard HEAD~1 >/dev/null
-  err "Rolled back to previous HEAD. Fix the error above and re-run."
+  err "Rolled back to previous HEAD."
+  err "If the error above was 'EOTP' (2FA required), re-run with:"
+  echo "    OTP=<your-6-digit-code> ./scripts/release.sh ${ARG}"
   exit 1
 }
 trap rollback ERR
 
 # ── 8) real npm publish ───────────────────────────────────────────────────
 log "Publishing $PACKAGE_NAME@$VERSION to npm"
-(cd "$PACKAGE_DIR" && npm publish --access public)
+PUBLISH_ARGS=(--access public)
+if [[ -n "${OTP:-}" ]]; then
+  PUBLISH_ARGS+=(--otp "$OTP")
+  dim "  using OTP from env"
+fi
+pnpm --dir "$PACKAGE_DIR" exec npm publish "${PUBLISH_ARGS[@]}"
 ok "Published $PACKAGE_NAME@$VERSION to npm"
 
 # Publish succeeded — disarm the rollback before touching remotes.
