@@ -86,6 +86,72 @@ const codeMdx = `import { Gallery } from "@hoangyell/gallery";
   ]}
   rows={2}
 />`;
+
+const aiPrompts = [
+  {
+    title: "Install and wire it up",
+    prompt: `Refer to https://github.com/HoangYell/hoangyell-gallery as the
+complete reference for the @hoangyell/gallery package, then in
+my current project:
+
+1. Install it with pnpm (or detect my package manager).
+2. Pick one MDX or .astro file that already has an image grid
+   or a stack of <img> tags.
+3. Replace that grid with <Gallery items={[...]} rows={2} />,
+   preserving every existing src and alt.
+4. Show me a small diff of what changed.`,
+  },
+  {
+    title: "Migrate from Hugo or another gallery",
+    prompt: `Refer to https://github.com/HoangYell/hoangyell-gallery for the
+@hoangyell/gallery API. Find every Hugo {{< gallery >}} shortcode
+(or my existing gallery component) across src/content/**/*.{md,mdx}
+and rewrite each one as <Gallery items={[...]} rows={N}> with
+the same images. Keep alt text. Add the import at the top of
+each file that needs it.`,
+  },
+  {
+    title: "Theme to match my brand",
+    prompt: `Refer to https://github.com/HoangYell/hoangyell-gallery for the
+CSS custom properties exposed by .hy-gallery. Add an override
+block in src/styles/global.css that sets:
+
+- --hy-gallery-accent to my brand color
+- --hy-gallery-radius to 1.25rem
+- --hy-gallery-gap to 6px
+
+Scope it under .prose .hy-gallery so it only applies inside
+blog content.`,
+  },
+];
+
+const familyCards = [
+  {
+    name: "hoangyell.com",
+    url: "https://hoangyell.com",
+    tagline: "The blog. Bilingual travel + tech essays, image-heavy.",
+    initials: "HY",
+    gradient: "from-amber-500 to-orange-600",
+    ring: "ring-amber-200 dark:ring-amber-900/40",
+  },
+  {
+    name: "yellorn.com",
+    url: "https://yellorn.com",
+    tagline:
+      "Fix broken JSON / XML / YAML / CSV. Mock webhook APIs. Send requests.",
+    initials: "Y",
+    gradient: "from-emerald-500 to-teal-600",
+    ring: "ring-emerald-200 dark:ring-emerald-900/40",
+  },
+  {
+    name: "markdy.com",
+    url: "https://markdy.com",
+    tagline: "Like Mermaid, but for motion. Open-source animation DSL.",
+    initials: "M",
+    gradient: "from-fuchsia-500 to-purple-600",
+    ring: "ring-fuchsia-200 dark:ring-fuchsia-900/40",
+  },
+];
 ---
 
 <Base>
@@ -107,6 +173,11 @@ const codeMdx = `import { Gallery } from "@hoangyell/gallery";
           href="#features"
           class="hidden sm:inline-block px-3 py-1.5 text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition"
           >Features</a
+        >
+        <a
+          href="#ai"
+          class="hidden md:inline-block px-3 py-1.5 text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition"
+          >AI</a
         >
         <a
           href="#install"
@@ -318,6 +389,107 @@ const codeMdx = `import { Gallery } from "@hoangyell/gallery";
       </div>
     </section>
 
+    {/* ── AI Agent / Vibe coding ───────────────────────────────── */}
+    <section id="ai" class="py-16 sm:py-24 bg-white/40 dark:bg-slate-900/40 border-y border-slate-200/60 dark:border-slate-800/60">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6">
+        <div class="text-center max-w-2xl mx-auto">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 mb-4">
+            <span class="inline-block h-1.5 w-1.5 rounded-full bg-brand-500 animate-pulse"></span>
+            Vibe coding
+          </span>
+          <h2 class="font-display text-3xl sm:text-4xl font-bold text-slate-900 dark:text-slate-100">
+            Let an AI agent install it for you
+          </h2>
+          <p class="mt-4 text-slate-600 dark:text-slate-400">
+            Paste any prompt below into Claude, ChatGPT, Cursor, Copilot, or
+            Windsurf. The agent will read the repo, install the package, and
+            wire up your imports.
+          </p>
+        </div>
+
+        {/* How it works — 3 tiny steps */}
+        <ol class="mt-10 grid gap-4 sm:grid-cols-3 max-w-3xl mx-auto text-sm">
+          <li class="flex items-start gap-3">
+            <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-500/15 text-brand-700 dark:text-brand-300 font-bold text-xs">1</span>
+            <span class="text-slate-600 dark:text-slate-400">Copy a prompt below.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-500/15 text-brand-700 dark:text-brand-300 font-bold text-xs">2</span>
+            <span class="text-slate-600 dark:text-slate-400">Edit the bracketed parts to fit your project.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-500/15 text-brand-700 dark:text-brand-300 font-bold text-xs">3</span>
+            <span class="text-slate-600 dark:text-slate-400">Paste into your AI tool. Done.</span>
+          </li>
+        </ol>
+
+        <div class="mt-10 grid gap-5 md:grid-cols-3">
+          {aiPrompts.map((p) => (
+            <article class="flex flex-col rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/80 backdrop-blur p-5 hover:border-brand-300 dark:hover:border-brand-700 transition group">
+              <h3 class="text-base font-semibold text-slate-900 dark:text-slate-100">
+                {p.title}
+              </h3>
+              <pre class="mt-3 flex-1 overflow-auto text-[12px] leading-relaxed font-mono text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-950/50 rounded-lg p-3 ring-1 ring-slate-200/60 dark:ring-slate-800/60 whitespace-pre-wrap">{p.prompt}</pre>
+              <button
+                type="button"
+                class="copy-btn mt-4 inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-brand-400 hover:border-brand-300 dark:hover:border-brand-700 transition"
+                data-code={p.prompt}
+                aria-label={`Copy ${p.title} prompt`}
+              >
+                <svg class="copy-icon h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <svg class="check-icon hidden h-3.5 w-3.5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                Copy prompt
+              </button>
+            </article>
+          ))}
+        </div>
+
+        <p class="mt-8 text-center text-xs text-slate-500 dark:text-slate-500">
+          Works with any AI that reads URLs · Claude · ChatGPT · Cursor · GitHub Copilot · Windsurf
+        </p>
+      </div>
+    </section>
+
+    {/* ── From the family ──────────────────────────────────────── */}
+    <section id="family" class="py-16 sm:py-24">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6">
+        <div class="text-center max-w-2xl mx-auto">
+          <h2 class="font-display text-3xl sm:text-4xl font-bold text-slate-900 dark:text-slate-100">
+            From the family
+          </h2>
+          <p class="mt-4 text-slate-600 dark:text-slate-400">
+            Sister projects from the same garage. All free, all open-source,
+            all built for engineers who ship.
+          </p>
+        </div>
+
+        <div class="mt-12 grid gap-5 sm:grid-cols-3">
+          {familyCards.map((c) => (
+            <a
+              href={c.url}
+              target="_blank"
+              rel="noopener"
+              class={`group block rounded-2xl p-6 bg-white/80 dark:bg-slate-900/80 backdrop-blur border border-slate-200/60 dark:border-slate-800/60 hover:border-transparent hover:ring-2 ${c.ring} transition`}
+            >
+              <div class={`inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${c.gradient} text-white font-bold text-sm shadow-sm group-hover:scale-110 transition`}>
+                {c.initials}
+              </div>
+              <h3 class="mt-4 text-base font-semibold text-slate-900 dark:text-slate-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition">
+                {c.name}
+              </h3>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400 min-h-[3.5rem]">
+                {c.tagline}
+              </p>
+              <span class="mt-4 inline-flex items-center gap-1 text-xs font-medium text-slate-500 dark:text-slate-500 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition">
+                Visit
+                <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
     {/* ── Install / CTA ────────────────────────────────────────── */}
     <section id="install" class="py-16 sm:py-24 bg-gradient-to-br from-brand-500/5 via-fuchsia-500/5 to-pink-500/5 dark:from-brand-500/10 dark:via-fuchsia-500/10 dark:to-pink-500/10">
       <div class="max-w-3xl mx-auto px-4 sm:px-6 text-center">
@@ -395,7 +567,9 @@ const codeMdx = `import { Gallery } from "@hoangyell/gallery";
           </h2>
           <ul class="space-y-1.5 text-sm">
             <li><a href="https://hoangyell.com" target="_blank" rel="noopener" class="text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition">hoangyell.com — the blog <span class="text-slate-300 dark:text-slate-700 ml-1">↗</span></a></li>
-            <li><a href="https://www.npmjs.com/~hoangyell" target="_blank" rel="noopener" class="text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition">npm packages by @hoangyell <span class="text-slate-300 dark:text-slate-700 ml-1">↗</span></a></li>
+            <li><a href="https://yellorn.com" target="_blank" rel="noopener" class="text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition">yellorn.com — JSON / webhook tools <span class="text-slate-300 dark:text-slate-700 ml-1">↗</span></a></li>
+            <li><a href="https://markdy.com" target="_blank" rel="noopener" class="text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition">markdy.com — animation DSL <span class="text-slate-300 dark:text-slate-700 ml-1">↗</span></a></li>
+            <li><a href="https://www.npmjs.com/~hoangyell" target="_blank" rel="noopener" class="text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition">all npm packages <span class="text-slate-300 dark:text-slate-700 ml-1">↗</span></a></li>
           </ul>
         </div>
       </div>
