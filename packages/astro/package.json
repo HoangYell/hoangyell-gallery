@@ -1,6 +1,6 @@
 {
   "name": "@hoangyell/gallery",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Astro image gallery with lightbox, pyramid multi-row layout, and accessible controls.",
   "license": "MIT",
   "type": "module",
