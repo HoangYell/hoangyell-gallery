@@ -78,6 +78,16 @@ import { Gallery } from "@hoangyell/gallery";
 | `fit` | `ObjectFit` | `"cover"` | Default CSS object-fit |
 | `class` | `string` | — | Extra wrapper class |
 
+## Dark mode
+
+The component auto-themes via three mechanisms (last one wins):
+
+1. `prefers-color-scheme: dark` — OS preference (default).
+2. `<html class="dark">` or `<html data-theme="dark">` — Tailwind-style class toggle.
+3. `<html class="light">` or `<html data-theme="light">` — explicit light theme override.
+
+This means it Just Works™ with manual theme toggles **and** OS preference.
+
 ## Customization
 
 Override CSS custom properties on `.hy-gallery`:

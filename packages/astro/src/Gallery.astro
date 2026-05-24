@@ -159,6 +159,7 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
     --hy-gallery-control-bg: rgba(255, 255, 255, 0.95);
   }
 
+  /* OS-level dark preference. */
   @media (prefers-color-scheme: dark) {
     .hy-gallery {
       --hy-gallery-bg: #0f172a;
@@ -168,6 +169,28 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
       --hy-gallery-text: #e2e8f0;
       --hy-gallery-control-bg: rgba(30, 41, 59, 0.95);
     }
+  }
+
+  /* Explicit light theme on any ancestor wins over OS preference.
+     Supports Tailwind-style `.light` class and `[data-theme="light"]`. */
+  :where(.light, [data-theme="light"]) .hy-gallery {
+    --hy-gallery-bg: #f8fafc;
+    --hy-gallery-overlay-bg: rgba(255, 255, 255, 0.7);
+    --hy-gallery-accent: #2563eb;
+    --hy-gallery-border: #e2e8f0;
+    --hy-gallery-text: #334155;
+    --hy-gallery-control-bg: rgba(255, 255, 255, 0.95);
+  }
+
+  /* Explicit dark theme on any ancestor wins over OS preference.
+     Supports Tailwind-style `.dark` class and `[data-theme="dark"]`. */
+  :where(.dark, [data-theme="dark"]) .hy-gallery {
+    --hy-gallery-bg: #0f172a;
+    --hy-gallery-overlay-bg: rgba(2, 6, 23, 0.8);
+    --hy-gallery-accent: #60a5fa;
+    --hy-gallery-border: #334155;
+    --hy-gallery-text: #e2e8f0;
+    --hy-gallery-control-bg: rgba(30, 41, 59, 0.95);
   }
 
   .hy-gallery {
