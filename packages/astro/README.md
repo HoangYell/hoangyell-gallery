@@ -2,6 +2,24 @@
 
 [Astro](https://astro.build/) image gallery component with lightbox, pyramid multi-row layout, and accessible controls.
 
+<p align="center">
+  <img
+    src="https://raw.githubusercontent.com/HoangYell/hoangyell-gallery/main/packages/astro/docs/gallery-overview.jpg"
+    alt="Three @hoangyell/gallery layouts: single image, 2-row pyramid of 4 images, and 3-row layout of 8 images"
+    width="640"
+  />
+</p>
+
+<p align="center">
+  <em>Click any image to open the lightbox — keyboard arrows, swipe, ESC to close.</em>
+  <br />
+  <img
+    src="https://raw.githubusercontent.com/HoangYell/hoangyell-gallery/main/packages/astro/docs/gallery-lightbox.jpg"
+    alt="Lightbox view with 1/4 page indicator, close button, and next-image arrow"
+    width="640"
+  />
+</p>
+
 ## Features
 
 - **Pyramid layout** — distribute images across rows with `rows` prop

@@ -4,6 +4,21 @@ Astro image gallery with lightbox, pyramid multi-row layout, and accessible cont
 
 Published as [`@hoangyell/gallery`](https://www.npmjs.com/package/@hoangyell/gallery) on npm.
 
+<p align="center">
+  <img
+    src="./packages/astro/docs/gallery-overview.jpg"
+    alt="Three @hoangyell/gallery layouts: single image, 2-row pyramid of 4 images, and 3-row layout of 8 images"
+    width="640"
+  />
+</p>
+<p align="center">
+  <img
+    src="./packages/astro/docs/gallery-lightbox.jpg"
+    alt="Lightbox view with page indicator, close button, and next-image arrow"
+    width="640"
+  />
+</p>
+
 ## Quick start
 
 ```sh
