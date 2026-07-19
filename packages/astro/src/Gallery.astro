@@ -506,6 +506,7 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
     previousBodyTop: string;
     previousBodyWidth: string;
     previousHtmlOverflow: string;
+    previousHtmlScrollBehavior: string;
 
     constructor(el: HTMLElement) {
       this.gallery = el;
@@ -526,6 +527,7 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
       this.previousBodyTop = "";
       this.previousBodyWidth = "";
       this.previousHtmlOverflow = "";
+      this.previousHtmlScrollBehavior = "";
 
       this.bind();
       document.addEventListener("astro:before-swap", this.forceClose);
@@ -684,6 +686,7 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
       this.previousBodyTop = document.body.style.top;
       this.previousBodyWidth = document.body.style.width;
       this.previousHtmlOverflow = document.documentElement.style.overflow;
+      this.previousHtmlScrollBehavior = document.documentElement.style.scrollBehavior;
 
       document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
@@ -700,7 +703,12 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
       document.body.style.position = this.previousBodyPosition;
       document.body.style.top = this.previousBodyTop;
       document.body.style.width = this.previousBodyWidth;
-      window.scrollTo(0, this.lockedScrollY);
+      document.documentElement.style.scrollBehavior = "auto";
+      window.scrollTo({ top: this.lockedScrollY, left: 0, behavior: "auto" });
+      requestAnimationFrame(() => {
+        document.documentElement.style.scrollBehavior =
+          this.previousHtmlScrollBehavior;
+      });
       this.lockedScrollY = -1;
     };
 
