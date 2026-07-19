@@ -500,6 +500,12 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
     currentIndex: number;
     touchStartX: number;
     touchStartY: number;
+    lockedScrollY: number;
+    previousBodyOverflow: string;
+    previousBodyPosition: string;
+    previousBodyTop: string;
+    previousBodyWidth: string;
+    previousHtmlOverflow: string;
 
     constructor(el: HTMLElement) {
       this.gallery = el;
@@ -514,6 +520,12 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
       this.currentIndex = -1;
       this.touchStartX = 0;
       this.touchStartY = 0;
+      this.lockedScrollY = -1;
+      this.previousBodyOverflow = "";
+      this.previousBodyPosition = "";
+      this.previousBodyTop = "";
+      this.previousBodyWidth = "";
+      this.previousHtmlOverflow = "";
 
       this.bind();
       document.addEventListener("astro:before-swap", this.forceClose);
@@ -539,10 +551,10 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
 
         document.removeEventListener("keydown", this.handleKey);
         document.removeEventListener("gesturestart", this.preventZoom);
-        document.body.style.overflow = "";
         const main = document.querySelector("main");
         if (main) main.removeAttribute("inert");
       }
+      this.unlockBackgroundScroll();
       document.removeEventListener("astro:before-swap", this.forceClose);
     };
 
@@ -561,7 +573,7 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
       this.preload(index + 1);
 
       document.body.appendChild(this.overlay);
-      document.body.style.overflow = "hidden";
+      this.lockBackgroundScroll();
       const main = document.querySelector("main");
       if (main) main.setAttribute("inert", "");
       this.overlay.focus();
@@ -650,7 +662,7 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
         this.imgEl = null;
         this.counterEl = null;
 
-        document.body.style.overflow = "";
+        this.unlockBackgroundScroll();
         const main = document.querySelector("main");
         if (main) main.removeAttribute("inert");
 
@@ -661,6 +673,35 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
           this.items[this.currentIndex].focus();
         }
       }, 300);
+    };
+
+    lockBackgroundScroll = () => {
+      if (this.lockedScrollY >= 0) return;
+
+      this.lockedScrollY = window.scrollY;
+      this.previousBodyOverflow = document.body.style.overflow;
+      this.previousBodyPosition = document.body.style.position;
+      this.previousBodyTop = document.body.style.top;
+      this.previousBodyWidth = document.body.style.width;
+      this.previousHtmlOverflow = document.documentElement.style.overflow;
+
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${this.lockedScrollY}px`;
+      document.body.style.width = "100%";
+    };
+
+    unlockBackgroundScroll = () => {
+      if (this.lockedScrollY < 0) return;
+
+      document.documentElement.style.overflow = this.previousHtmlOverflow;
+      document.body.style.overflow = this.previousBodyOverflow;
+      document.body.style.position = this.previousBodyPosition;
+      document.body.style.top = this.previousBodyTop;
+      document.body.style.width = this.previousBodyWidth;
+      window.scrollTo(0, this.lockedScrollY);
+      this.lockedScrollY = -1;
     };
 
     navigate = (dir: number) => {
