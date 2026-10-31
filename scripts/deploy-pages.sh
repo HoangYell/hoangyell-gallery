@@ -31,6 +31,13 @@ EXPECTED_ACCOUNT_ID="3b36a5c51daee9566d07c97a0c78c887"
 
 cd "$(git rev-parse --show-toplevel)"
 
+if [[ -f .env ]]; then
+  set -a
+  # shellcheck disable=SC1091
+  source .env
+  set +a
+fi
+
 # Make sure node and pnpm are reachable (cold zsh sessions sometimes miss).
 for d in "$HOME/Library/pnpm" "/opt/homebrew/bin" "/usr/local/bin"; do
   [[ -d "$d" ]] && export PATH="$d:$PATH"
@@ -43,25 +50,36 @@ for cmd in pnpm npx git node; do
   fi
 done
 
-# Verify the wrangler login is the expected account (best-effort).
-log "Verifying Cloudflare account"
-WHOAMI="$(npx -y -p wrangler@4 wrangler whoami 2>&1 || true)"
-if echo "$WHOAMI" | grep -qi "not authenticated"; then
-  err "wrangler is not logged in. Run: wrangler login"
-  exit 1
-fi
-if echo "$WHOAMI" | grep -q "$EXPECTED_ACCOUNT_ID"; then
-  ok "Logged into Ngohoang.yell@gmail.com's Account"
-else
-  err "wrangler is NOT logged into the expected account."
-  err "Expected account ID: $EXPECTED_ACCOUNT_ID"
-  err "Run: wrangler login   (and pick ngohoang.yell@gmail.com)"
-  echo "$WHOAMI"
-  exit 1
-fi
-
 # Pin the account ID so multi-account logins don't bite us.
 export CLOUDFLARE_ACCOUNT_ID="$EXPECTED_ACCOUNT_ID"
+
+# Verify Cloudflare authentication
+log "Verifying Cloudflare access"
+if [[ -n "${CLOUDFLARE_API_TOKEN:-}" ]]; then
+  HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+    "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/pages/projects/${PROJECT_NAME}" 2>/dev/null || echo "000")
+  if [[ "$HTTP_CODE" == "200" ]]; then
+    ok "Authenticated via CLOUDFLARE_API_TOKEN (Pages project '${PROJECT_NAME}')"
+  else
+    err "Cloudflare API verification failed (HTTP ${HTTP_CODE}). Check CLOUDFLARE_API_TOKEN in .env"
+    exit 1
+  fi
+else
+  WHOAMI="$(npx -y -p wrangler@4 wrangler whoami 2>&1 || true)"
+  if echo "$WHOAMI" | grep -qi "not authenticated"; then
+    err "wrangler is not logged in. Run: wrangler login"
+    exit 1
+  fi
+  if echo "$WHOAMI" | grep -q "$EXPECTED_ACCOUNT_ID"; then
+    ok "Logged into Ngohoang.yell@gmail.com's Account"
+  else
+    err "wrangler is NOT logged into the expected account."
+    err "Expected account ID: $EXPECTED_ACCOUNT_ID"
+    err "Run: wrangler login   (and pick ngohoang.yell@gmail.com)"
+    echo "$WHOAMI"
+    exit 1
+  fi
+fi
 
 # ── Build ─────────────────────────────────────────────────────────────────
 log "Building $SITE_DIR (Astro static)"

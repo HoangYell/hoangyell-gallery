@@ -28,7 +28,7 @@
 
 - **Pyramid layout** — distribute images across rows with `rows` prop
 - **Two fit modes** — `cover` (default, uniform photo grid) or `contain` (natural aspect, for diagrams and tall portraits)
-- **Lightbox** — click to open, keyboard arrows, swipe, ESC to close
+- **Lightbox & pinch-to-zoom** — click to open, smooth multi-touch pinch-to-zoom & pan, double-tap zoom, mouse wheel, keyboard navigation (`+`, `-`, `0`, arrows, ESC)
 - **Corner rounding** — only the four outer corners of each group are rounded
 - **Hover zoom** — image scales inside its cell without changing layout
 - **Accessible** — focus management, ARIA labels, safe-area controls, reduced-motion support
@@ -81,6 +81,7 @@ import { Gallery } from "@hoangyell/gallery";
 | `orientation` | `"landscape" \| "portrait"` | `"landscape"` | Item aspect ratio hint |
 | `scale` | `number` | `1` | Gallery width scale (0–1) |
 | `fit` | `ObjectFit` | `"cover"` | Default CSS object-fit — see Fit modes below |
+| `zoom` | `boolean` | `true` | Enable zoom controls and pinch-to-zoom gesture in lightbox |
 | `class` | `string` | — | Extra wrapper class |
 
 ## Fit modes

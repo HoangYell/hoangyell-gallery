@@ -1,6 +1,6 @@
 # @hoangyell/gallery
 
-Astro image gallery with lightbox, pyramid multi-row layout, and accessible controls.
+Astro image gallery with lightbox, pyramid multi-row layout, pinch-to-zoom, and accessible controls.
 
 - Live demo: **[gallery.hoangyell.com](https://gallery.hoangyell.com)**
 - npm: **[`@hoangyell/gallery`](https://www.npmjs.com/package/@hoangyell/gallery)**

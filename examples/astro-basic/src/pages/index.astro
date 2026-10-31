@@ -4,8 +4,6 @@ import Base from "../layouts/Base.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import CopyCode from "../components/CopyCode.astro";
 
-const heroImg = "https://picsum.photos/seed/hy-gallery-hero/1600/1100";
-
 const pyramid = [
   "https://picsum.photos/seed/hy-1/900/680",
   "https://picsum.photos/seed/hy-2/900/680",
@@ -45,8 +43,8 @@ const features = [
   },
   {
     icon: "zoom",
-    title: "Accessible lightbox",
-    body: "Click, tap, keyboard arrows, swipe, ESC. Focus is restored. `inert` locks the page behind. `prefers-reduced-motion` is honored.",
+    title: "Lightbox & pinch-to-zoom",
+    body: "Click, tap, keyboard arrows, swipe, ESC. Smooth pinch-to-zoom and pan on mobile, wheel and double-click on desktop. Focus restored.",
   },
   {
     icon: "moon",
@@ -274,7 +272,7 @@ const familyCards = [
             <div class="rounded-2xl overflow-hidden bg-white dark:bg-slate-900 p-2 sm:p-4">
               <Gallery items={pyramid} rows={2} />
               <p class="text-center text-xs text-slate-500 dark:text-slate-500 mt-3">
-                ↑ Click any image. Use arrow keys or swipe.
+                ↑ Click any image. Pinch or double-tap to zoom, drag to pan.
               </p>
             </div>
           </div>
