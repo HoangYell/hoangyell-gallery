@@ -81,7 +81,8 @@ import { Gallery } from "@hoangyell/gallery";
 | `orientation` | `"landscape" \| "portrait"` | `"landscape"` | Item aspect ratio hint |
 | `scale` | `number` | `1` | Gallery width scale (0–1) |
 | `fit` | `ObjectFit` | `"cover"` | Default CSS object-fit — see Fit modes below |
-| `zoom` | `boolean` | `true` | Enable zoom controls and pinch-to-zoom gesture in lightbox |
+| `zoom` | `boolean` | `true` | Enable pinch-to-zoom, pan, double-tap, and wheel zoom |
+| `zoomControls` | `boolean` | `false` | Show visible zoom in / zoom out / reset buttons in lightbox |
 | `class` | `string` | — | Extra wrapper class |
 
 ## Fit modes

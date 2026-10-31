@@ -29,8 +29,10 @@ export interface Props {
   scale?: number;
   /** Global object-fit for all items unless overridden per-item. */
   fit?: ObjectFit;
-  /** Enable zoom controls and pinch-to-zoom gesture in lightbox. Defaults to true. */
+  /** Enable zoom gestures (pinch, double-tap, pan, wheel) in lightbox. Defaults to true. */
   zoom?: boolean;
+  /** Show visible zoom in/out/reset buttons in the lightbox toolbar. Defaults to false. */
+  zoomControls?: boolean;
 }
 
 const {
@@ -40,6 +42,7 @@ const {
   scale = 1,
   fit = "cover",
   zoom = true,
+  zoomControls = false,
 } = Astro.props;
 
 const rawItems = Array.isArray(Astro.props.items) ? Astro.props.items : [];
@@ -105,6 +108,7 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
       data-orientation={orientation}
       data-fit={fit}
       data-zoom={zoom ? "true" : "false"}
+      data-zoom-controls={zoomControls ? "true" : "false"}
       style={scale !== 1 ? `width: ${scale * 100}%; margin: 2rem auto;` : undefined}
     >
       {groupedItems.map((group, rowIdx) => {
@@ -569,6 +573,7 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
     closeBtn: HTMLButtonElement | null;
     currentIndex: number;
     zoomEnabled: boolean;
+    zoomControlsEnabled: boolean;
 
     // Zoom & pan state
     scale: number;
@@ -609,6 +614,7 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
     constructor(el: HTMLElement) {
       this.gallery = el;
       this.zoomEnabled = el.dataset.zoom !== "false";
+      this.zoomControlsEnabled = el.dataset.zoomControls === "true";
       this.items = Array.from(
         el.querySelectorAll<HTMLButtonElement>(".hy-gallery-item"),
       );
@@ -894,7 +900,7 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
       this.zoomControls = document.createElement("div");
       this.zoomControls.className = "hy-gallery-controls";
 
-      if (this.zoomEnabled) {
+      if (this.zoomEnabled && this.zoomControlsEnabled) {
         this.zoomOutBtn = document.createElement("button");
         this.zoomOutBtn.className = "hy-gallery-btn hy-gallery-zoom-out";
         this.zoomOutBtn.setAttribute("type", "button");
