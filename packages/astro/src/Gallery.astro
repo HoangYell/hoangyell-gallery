@@ -27,7 +27,7 @@ export interface Props {
   orientation?: "landscape" | "portrait";
   /** Scale factor to reduce gallery width (1 = full). */
   scale?: number;
-  /** Global object-fit for all items unless overridden per-item. Defaults to "contain". */
+  /** Global object-fit for all items unless overridden per-item. Auto: "contain" for 1 item, "cover" for multiple items. */
   fit?: ObjectFit;
   /** Enable zoom gestures (pinch, double-tap, pan, wheel) in lightbox. Defaults to true. */
   zoom?: boolean;
@@ -40,7 +40,7 @@ const {
   rows,
   orientation = "landscape",
   scale = 1,
-  fit = "contain",
+  fit: explicitFit,
   zoom = true,
   zoomControls = false,
 } = Astro.props;
@@ -59,16 +59,23 @@ function altFromUrl(url: string): string {
   }
 }
 
+const validItemCount = rawItems.filter((item) => {
+  if (typeof item === "string") return item.trim() !== "";
+  return Boolean(item?.src);
+}).length;
+const defaultFit: ObjectFit = validItemCount <= 1 ? "contain" : "cover";
+const resolvedFit: ObjectFit = explicitFit || defaultFit;
+
 const galleryItems: GalleryItem[] = rawItems
   .map((item, i) => {
     if (typeof item === "string") {
       return {
         src: item,
         alt: rawAlts[i] || altFromUrl(item),
-        fit: String(fit),
+        fit: String(resolvedFit),
       };
     }
-    const itemFit = item?.fit || fit;
+    const itemFit = item?.fit || resolvedFit;
     return {
       src: item?.src || "",
       alt: item?.alt || rawAlts[i] || altFromUrl(item?.src || ""),
@@ -106,7 +113,7 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
       class={`hy-gallery ${className}`}
       data-hy-gallery
       data-orientation={orientation}
-      data-fit={fit}
+      data-fit={resolvedFit}
       data-zoom={zoom ? "true" : "false"}
       data-zoom-controls={zoomControls ? "true" : "false"}
       style={scale !== 1 ? `width: ${scale * 100}%; margin: 2rem auto;` : undefined}
@@ -277,7 +284,7 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
      Drops the forced 4:3 / 1:1 container so diagrams, charts, screenshots,
      and tall portraits render fully without cropping or letterboxing.
      Applied either at the wrapper (global) or per-item via data-fit. */
-  .hy-gallery[data-fit="contain"] .hy-gallery-item,
+  .hy-gallery[data-fit="contain"] .hy-gallery-item:not([data-fit="cover"]),
   .hy-gallery .hy-gallery-item[data-fit="contain"] {
     aspect-ratio: auto;
     background: transparent;
@@ -301,7 +308,7 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
 
   /* In contain mode the image is the primary content — let it drive height
      instead of being absolutely positioned inside a fixed-aspect box. */
-  .hy-gallery[data-fit="contain"] .hy-gallery-img,
+  .hy-gallery[data-fit="contain"] .hy-gallery-item:not([data-fit="cover"]) .hy-gallery-img,
   .hy-gallery .hy-gallery-item[data-fit="contain"] .hy-gallery-img {
     position: static;
     width: 100%;

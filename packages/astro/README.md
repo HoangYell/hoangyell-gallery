@@ -27,7 +27,7 @@
 ## Features
 
 - **Pyramid layout** — distribute images across rows with `rows` prop
-- **Two fit modes** — `contain` (default, natural aspect, for diagrams, code screenshots, and tall portraits) or `cover` (uniform photo grid)
+- **Adaptive fit modes** - auto-detects `contain` for single images (natural aspect, no cropping) and `cover` for multi-image galleries (clean uniform grid)
 - **Lightbox & pinch-to-zoom** — click to open, smooth multi-touch pinch-to-zoom & pan, double-tap zoom, mouse wheel, keyboard navigation (`+`, `-`, `0`, arrows, ESC)
 - **Corner rounding** — only the four outer corners of each group are rounded
 - **Hover zoom** — image scales inside its cell without changing layout
@@ -80,7 +80,7 @@ import { Gallery } from "@hoangyell/gallery";
 | `rows` | `number` | auto (~3 per row) | Number of visual rows |
 | `orientation` | `"landscape" \| "portrait"` | `"landscape"` | Item aspect ratio hint |
 | `scale` | `number` | `1` | Gallery width scale (0–1) |
-| `fit` | `ObjectFit` | `"contain"` | Default CSS object-fit — see Fit modes below |
+| `fit` | `ObjectFit` | auto (`"contain"` for 1 item, `"cover"` for 2+) | CSS object-fit: see Fit modes below |
 | `zoom` | `boolean` | `true` | Enable pinch-to-zoom, pan, double-tap, and wheel zoom |
 | `zoomControls` | `boolean` | `false` | Show visible zoom in / zoom out / reset buttons in lightbox |
 | `class` | `string` | — | Extra wrapper class |
@@ -88,12 +88,11 @@ import { Gallery } from "@hoangyell/gallery";
 ## Fit modes
 
 The `fit` prop controls **both** the image's `object-fit` **and** the
-container's aspect ratio. Pick the right one for your content:
+container's aspect ratio.
 
-| Mode | What you get | When to use |
-|---|---|---|
-| `"contain"` (default) | Container hugs each image's natural aspect ratio. No cropping. | Diagrams, charts, screenshots, comics, memes, portraits. |
-| `"cover"` | Uniform 4:3 grid (1:1 on mobile). Images are cropped to fill. | Photo galleries — travel, products, faces. The Pinterest aesthetic. |
+- **Auto-adaptive (default)**: single images auto-default to `"contain"` so diagrams, screenshots, memes, and tall portraits render at full natural aspect ratio without cropping. Multi-image sets auto-default to `"cover"` so rows stay perfectly uniform without jagged heights.
+- `"contain"`: Container hugs each image's natural aspect ratio. No cropping. Ideal for standalone diagrams, charts, screenshots, comics, memes, and portraits.
+- `"cover"`: Uniform 4:3 grid (1:1 on mobile). Images are cropped to fill cells neatly. Ideal for multi-photo sets.
 
 Set it at the gallery level:
 
