@@ -27,7 +27,7 @@
 ## Features
 
 - **Pyramid layout** — distribute images across rows with `rows` prop
-- **Two fit modes** — `cover` (default, uniform photo grid) or `contain` (natural aspect, for diagrams and tall portraits)
+- **Two fit modes** — `contain` (default, natural aspect, for diagrams, code screenshots, and tall portraits) or `cover` (uniform photo grid)
 - **Lightbox & pinch-to-zoom** — click to open, smooth multi-touch pinch-to-zoom & pan, double-tap zoom, mouse wheel, keyboard navigation (`+`, `-`, `0`, arrows, ESC)
 - **Corner rounding** — only the four outer corners of each group are rounded
 - **Hover zoom** — image scales inside its cell without changing layout
@@ -80,7 +80,7 @@ import { Gallery } from "@hoangyell/gallery";
 | `rows` | `number` | auto (~3 per row) | Number of visual rows |
 | `orientation` | `"landscape" \| "portrait"` | `"landscape"` | Item aspect ratio hint |
 | `scale` | `number` | `1` | Gallery width scale (0–1) |
-| `fit` | `ObjectFit` | `"cover"` | Default CSS object-fit — see Fit modes below |
+| `fit` | `ObjectFit` | `"contain"` | Default CSS object-fit — see Fit modes below |
 | `zoom` | `boolean` | `true` | Enable pinch-to-zoom, pan, double-tap, and wheel zoom |
 | `zoomControls` | `boolean` | `false` | Show visible zoom in / zoom out / reset buttons in lightbox |
 | `class` | `string` | — | Extra wrapper class |
@@ -92,8 +92,8 @@ container's aspect ratio. Pick the right one for your content:
 
 | Mode | What you get | When to use |
 |---|---|---|
-| `"cover"` (default) | Uniform 4:3 grid (1:1 on mobile). Images are cropped to fill. | Photo galleries — travel, products, faces. The Pinterest aesthetic. |
-| `"contain"` | Container hugs each image's natural aspect ratio. No cropping. | Diagrams, charts, screenshots, comics, tall portraits. |
+| `"contain"` (default) | Container hugs each image's natural aspect ratio. No cropping. | Diagrams, charts, screenshots, comics, memes, portraits. |
+| `"cover"` | Uniform 4:3 grid (1:1 on mobile). Images are cropped to fill. | Photo galleries — travel, products, faces. The Pinterest aesthetic. |
 
 Set it at the gallery level:
 

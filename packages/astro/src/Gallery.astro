@@ -27,7 +27,7 @@ export interface Props {
   orientation?: "landscape" | "portrait";
   /** Scale factor to reduce gallery width (1 = full). */
   scale?: number;
-  /** Global object-fit for all items unless overridden per-item. */
+  /** Global object-fit for all items unless overridden per-item. Defaults to "contain". */
   fit?: ObjectFit;
   /** Enable zoom gestures (pinch, double-tap, pan, wheel) in lightbox. Defaults to true. */
   zoom?: boolean;
@@ -40,7 +40,7 @@ const {
   rows,
   orientation = "landscape",
   scale = 1,
-  fit = "cover",
+  fit = "contain",
   zoom = true,
   zoomControls = false,
 } = Astro.props;
