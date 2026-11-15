@@ -192,6 +192,7 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
   /* Explicit light theme on any ancestor wins over OS preference.
      Supports Tailwind-style `.light` class and `[data-theme="light"]`. */
   :where(.light, [data-theme="light"]) .hy-gallery {
+    color-scheme: light;
     --hy-gallery-bg: #f8fafc;
     --hy-gallery-overlay-bg: rgba(255, 255, 255, 0.7);
     --hy-gallery-accent: #2563eb;
@@ -203,6 +204,7 @@ if (resolvedRows <= 1 || galleryItems.length <= 1) {
   /* Explicit dark theme on any ancestor wins over OS preference.
      Supports Tailwind-style `.dark` class and `[data-theme="dark"]`. */
   :where(.dark, [data-theme="dark"]) .hy-gallery {
+    color-scheme: dark;
     --hy-gallery-bg: #0f172a;
     --hy-gallery-overlay-bg: rgba(2, 6, 23, 0.8);
     --hy-gallery-accent: #60a5fa;
